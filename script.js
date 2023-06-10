@@ -23,6 +23,7 @@ function startWebcam() {
 
 function getLabeledFaceDescriptions() {
 
+  // TODO: CRIAR DINAMISMO PARA ESSA LISTA
   const labels = ["Alex", "Emerson"];
 
   return Promise.all(
