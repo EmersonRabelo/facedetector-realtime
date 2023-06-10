@@ -71,8 +71,20 @@ function getLabeledFaceDescriptions() {
         const box = resizedDetections[i].detection.box;
         const drawBox = new faceapi.draw.DrawBox(box, {
           label: result,
+          boxColor: 'red'
         });
+
         drawBox.draw(canvas);
+
+        if (result._label && result._distance > 0.4){
+          const drawBox = new faceapi.draw.DrawBox(box, {
+            label: result,
+            boxColor: 'green'
+          });
+          drawBox.draw(canvas);
+
+          clearInterval(interval);
+        }
       });
     }, 100);
   });
