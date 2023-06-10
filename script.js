@@ -6,7 +6,6 @@ Promise.all([
   faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
 ])
 .then(startWebcam)
-.then(faceRecognition);
 
 function startWebcam() {
   navigator.mediaDevices
@@ -42,11 +41,12 @@ function getLabeledFaceDescriptions() {
   );
 }
 
-async function faceRecognition(){
-  const labeledFaceDescriptors = await getLabeledFaceDescriptions();
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
 
   video.addEventListener("play", async () => {
+
+    const labeledFaceDescriptors = await getLabeledFaceDescriptions();
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
+
     const canvas = faceapi.createCanvasFromMedia(video);
     document.body.append(canvas);
   
@@ -76,5 +76,3 @@ async function faceRecognition(){
       });
     }, 100);
   });
-
-}
