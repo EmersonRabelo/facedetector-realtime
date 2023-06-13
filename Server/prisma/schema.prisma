@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Classe {
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  dt_update          DateTime             @default(now())
+  dt_created         DateTime             @default(now())
+  teacher            TeachersOnClasses[]
+  student            Student[]
+  TeachersOnStudents TeachersOnStudents[]
+  AttendanceList     AttendanceList[]
+}
+
+model Teacher {
+  id             Int                  @id @default(autoincrement())
+  fullName       String
+  login          String               @unique
+  password       String
+  dt_update      DateTime             @default(now())
+  dt_created     DateTime             @default(now())
+  classe         TeachersOnClasses[]
+  students       TeachersOnStudents[]
+  AttendanceList AttendanceList[]
+}
+
+model Student {
+  id             Int                  @id @default(autoincrement())
+  fullName       String
+  images_path    String
+  class          Classe               @relation(fields: [classID], references: [id])
+  classID        Int
+  teachers       TeachersOnStudents[]
+  AttendanceList AttendanceList[]
+}
+
+model TeachersOnClasses {
+  class      Classe   @relation(fields: [classID], references: [id])
+  classID    Int
+  teacher    Teacher  @relation(fields: [teacherID], references: [id])
+  teacherID  Int
+  assignedAt DateTime @default(now())
+
+  @@id([classID, teacherID])
+}
+
+model TeachersOnStudents {
+  teacher    Teacher  @relation(fields: [teacherID], references: [id])
+  teacherID  Int
+  student    Student  @relation(fields: [studentID], references: [id])
+  studentID  Int
+  Classe     Classe?  @relation(fields: [classeId], references: [id])
+  classeId   Int?
+  assignedAt DateTime @default(now())
+
+  @@id([teacherID, studentID])
+}
+
+model AttendanceList {
+  teacher    Teacher  @relation(fields: [teacherID], references: [id])
+  teacherID  Int
+  student    Student  @relation(fields: [studentID], references: [id])
+  studentID  Int
+  class      Classe   @relation(fields: [classID], references: [id])
+  classID    Int
+  assignedAt DateTime @default(now())
+
+  @@id([teacherID, studentID, classID])
+}
